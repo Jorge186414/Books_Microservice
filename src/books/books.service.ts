@@ -1,9 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class BooksService {
+export class BooksService extends PrismaClient implements OnModuleInit {
+
+  private readonly logger = new Logger('BooksService')
+
+  onModuleInit() {
+    this.$connect()
+    this.logger.log('Database Connected')
+  }
   create(createBookDto: CreateBookDto) {
     return 'This action adds a new book';
   }
