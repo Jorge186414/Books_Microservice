@@ -1,8 +1,9 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
 
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { PrismaClient } from '@prisma/client';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class BooksService extends PrismaClient implements OnModuleInit {
@@ -13,23 +14,65 @@ export class BooksService extends PrismaClient implements OnModuleInit {
     this.$connect()
     this.logger.log('Database Connected')
   }
+
   create(createBookDto: CreateBookDto) {
-    return 'This action adds a new book';
+    return this.book.create({
+      data: createBookDto
+    })
   }
 
-  findAll() {
-    return `This action returns all books`;
+
+  async findAll(paginationDto: PaginationDto) {
+
+    const { page, limit } = paginationDto
+
+    const totalPages = await this.book.count({
+      where: { available: true }
+    })
+
+    const lastPage = Math.ceil(totalPages / limit)
+
+    return {
+      data: await this.book.findMany({
+        where: { available: true },
+        skip: (page - 1) * limit,
+        take: limit
+      }),
+      metadata: {
+        total: totalPages,
+        page: page,
+        lastPage: lastPage
+      }
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findOne(isbn: string) {
+    const book = await this.book.findUnique({
+      where: { isbn, available: true }
+    })
+
+    if (!book) {
+      throw new NotFoundException(`Bookt wit isbn ${isbn} not found`)
+    }
+
+    return book
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(isbn: string, updateBookDto: UpdateBookDto) {
+    await this.findOne(isbn)
+
+    return this.book.update({
+      where: { isbn },
+      data: updateBookDto
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  async remove(isbn: string) {
+    const book = await this.book.update({
+      where: { isbn },
+      data: {
+        available: false
+      }
+    })
   }
 }
