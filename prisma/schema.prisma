@@ -29,7 +29,7 @@ model category {
   available   Boolean @default(true)
 }
 
-model reserves {
+model reserve {
   id          Int      @id @default(autoincrement())
   isbn        String
   reservedate DateTime @default(now())
