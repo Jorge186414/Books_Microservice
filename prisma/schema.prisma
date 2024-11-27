@@ -8,7 +8,7 @@ datasource db {
 }
 
 model book {
-  isbn      String      @id
+  isbn      String   @id
   titulo    String
   tipo      String
   autor     String
@@ -20,4 +20,56 @@ model book {
   available Boolean  @default(true)
 
   @@index([available])
+}
+
+model category {
+  id          Int    @id @default(autoincrement())
+  nombre      String
+  descripcion String
+}
+
+model reserves {
+  id          Int      @id @default(autoincrement())
+  isbn        String
+  reservedate DateTime @default(now())
+  status      Boolean  @default(true)
+}
+
+model genre {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model loan {
+  id         Int      @id @default(autoincrement())
+  loandate   DateTime @default(now())
+  returndate DateTime @updatedAt
+}
+
+model loandetail {
+  id          Int    @id @default(autoincrement())
+  idloan      Int
+  isbn        String
+  description String
+}
+
+model returnloan {
+  id               Int      @id @default(autoincrement())
+  idpenalty        Int
+  actualreturndate DateTime @default(now())
+}
+
+model returnloandetail {
+  id           Int    @id @default(autoincrement())
+  idreturnloan Int
+  idloandetail Int
+  description  String
+  total        Float
+}
+
+model penalty {
+  id          Int    @id @default(autoincrement())
+  type        String
+  description String
+  cost        Float
 }
