@@ -23,9 +23,10 @@ model book {
 }
 
 model category {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   nombre      String
   descripcion String
+  available   Boolean @default(true)
 }
 
 model reserves {
@@ -33,43 +34,50 @@ model reserves {
   isbn        String
   reservedate DateTime @default(now())
   status      Boolean  @default(true)
+  available   Boolean  @default(true)
 }
 
 model genre {
-  id   Int    @id @default(autoincrement())
-  name String
+  id        Int     @id @default(autoincrement())
+  name      String
+  available Boolean @default(true)
 }
 
 model loan {
   id         Int      @id @default(autoincrement())
   loandate   DateTime @default(now())
   returndate DateTime @updatedAt
+  available  Boolean  @default(true)
 }
 
 model loandetail {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   idloan      Int
   isbn        String
   description String
+  available   Boolean @default(true)
 }
 
 model returnloan {
   id               Int      @id @default(autoincrement())
   idpenalty        Int
   actualreturndate DateTime @default(now())
+  available        Boolean  @default(true)
 }
 
 model returnloandetail {
-  id           Int    @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   idreturnloan Int
   idloandetail Int
   description  String
   total        Float
+  available    Boolean @default(true)
 }
 
 model penalty {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   type        String
   description String
   cost        Float
+  available   Boolean @default(true)
 }
