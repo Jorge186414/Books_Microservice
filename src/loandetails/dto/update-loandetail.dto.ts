@@ -1,4 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateLoandetailDto } from './create-loandetail.dto';
+import { Type } from 'class-transformer';
 
-export class UpdateLoandetailDto extends PartialType(CreateLoandetailDto) {}
+import { CreateLoandetailDto } from './create-loandetail.dto';
+import { IsNumber, IsPositive } from 'class-validator';
+
+export class UpdateLoandetailDto extends PartialType(CreateLoandetailDto) {
+   @IsNumber()
+   @IsPositive()
+   @Type(() => Number)
+   public id: number
+}

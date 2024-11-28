@@ -1,35 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
-import { ReturnloansService } from './returnloans.service';
+import { Controller, ParseIntPipe } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+
 import { CreateReturnloanDto } from './dto/create-returnloan.dto';
 import { UpdateReturnloanDto } from './dto/update-returnloan.dto';
+import { ReturnloansService } from './returnloans.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('returnloans')
 export class ReturnloansController {
   constructor(private readonly returnloansService: ReturnloansService) { }
 
-  @Post()
-  create(@Body() createReturnloanDto: CreateReturnloanDto) {
+  // @Post()
+  @MessagePattern({ cmd: 'create_return_loan' })
+  create(@Payload() createReturnloanDto: CreateReturnloanDto) {
     return this.returnloansService.create(createReturnloanDto);
   }
 
-  @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
+  // @Get()
+  @MessagePattern({ cmd: "find_all" })
+  findAll(@Payload() paginationDto: PaginationDto) {
     return this.returnloansService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  // @Get(':id')
+  @MessagePattern({ cmd: "find_one_return_loan" })
+  findOne(@Payload('id', ParseIntPipe) id: number) {
     return this.returnloansService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateReturnloanDto: UpdateReturnloanDto) {
-    return this.returnloansService.update(id, updateReturnloanDto);
+  // @Patch(':id')
+  @MessagePattern({ cmd: 'update_return_loan' })
+  update(
+    //   @Param('id', ParseIntPipe) id: number, 
+    //   @Body() updateReturnloanDto: UpdateReturnloanDto
+    @Payload() updateReturnloanDto: UpdateReturnloanDto) {
+    return this.returnloansService.update(updateReturnloanDto.id, updateReturnloanDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  // @Delete(':id')
+  @MessagePattern({ cmd: 'delete_return_loan' })
+  remove(@Payload('id', ParseIntPipe) id: number) {
     return this.returnloansService.remove(id);
   }
 }

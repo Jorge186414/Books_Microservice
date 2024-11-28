@@ -1,4 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateCategoryDto } from './create-category.dto';
+import { Type } from 'class-transformer';
 
-export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {}
+import { CreateCategoryDto } from './create-category.dto';
+import { IsNumber, IsPositive } from 'class-validator';
+
+export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
+   @IsNumber()
+   @IsPositive()
+   @Type(() => Number)
+   public id: number
+}

@@ -1,4 +1,13 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateReserveDto } from './create-reserve.dto';
+import { Type } from 'class-transformer';
 
-export class UpdateReserveDto extends PartialType(CreateReserveDto) {}
+import { CreateReserveDto } from './create-reserve.dto';
+import { IsNumber, IsPositive } from 'class-validator';
+
+export class UpdateReserveDto extends PartialType(CreateReserveDto) {
+
+   @IsNumber()
+   @IsPositive()
+   @Type(() => Number)
+   public id: number
+}
