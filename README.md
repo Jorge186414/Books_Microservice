@@ -25,7 +25,7 @@
 
 ## Microservice Deployment
 
-1. Clone de repository.
+1. Clone the repository.
 ```
 git@github.com:Jorge186414/Books_Microservice.git
 ```
