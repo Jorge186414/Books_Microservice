@@ -13,6 +13,18 @@ services:
       - mysql_data:/var/lib/mysql    
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  nestjs-app:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    container_name: nestjs_container
+    environment:
+      DATABASE_URL: "mysql://admin:091022admin@mysql:3306/books_ms"
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+
 volumes:
   mysql_data:
-
