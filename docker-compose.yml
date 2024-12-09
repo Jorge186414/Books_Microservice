@@ -12,6 +12,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql    
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - books_network  
 
   nestjs-app:
     build:
@@ -25,6 +27,13 @@ services:
       - "3001:3001"
     depends_on:
       - mysql
+    networks:
+      - books_network  
 
 volumes:
   mysql_data:
+
+networks:
+  books_network:
+    driver: bridge
+    name: books_network
