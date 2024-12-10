@@ -1,9 +1,11 @@
-import { Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { PrismaClient } from '@prisma/client';
+
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class BooksService extends PrismaClient implements OnModuleInit {
@@ -52,18 +54,23 @@ export class BooksService extends PrismaClient implements OnModuleInit {
     })
 
     if (!book) {
-      throw new NotFoundException(`Bookt wit isbn ${isbn} not found`)
+      throw new RpcException({
+        message: `Book with isbn ${isbn} not found`,
+        status: HttpStatus.BAD_REQUEST
+      })
     }
-
     return book
   }
 
   async update(isbn: string, updateBookDto: UpdateBookDto) {
+    
+    const { isbn: __, ...data } = updateBookDto
+    
     await this.findOne(isbn)
 
     return this.book.update({
       where: { isbn },
-      data: updateBookDto
+      data: data
     })
   }
 
@@ -74,5 +81,6 @@ export class BooksService extends PrismaClient implements OnModuleInit {
         available: false
       }
     })
+    return book
   }
 }
