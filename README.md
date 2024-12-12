@@ -27,7 +27,7 @@
 
 1. Clone the repository.
 ```
-git@github.com:Jorge186414/Books_Microservice.git
+git clone git@github.com:Jorge186414/Books_Microservice.git
 ```
 
 2. Go to the repository folder.
